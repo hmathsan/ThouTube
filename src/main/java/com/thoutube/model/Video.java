@@ -1,6 +1,7 @@
-package com.thoutume.model;
+package com.thoutube.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,18 +11,21 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 @Entity
-public class Post {
+public class Video {
     
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String title;
-    private String message;
-    private LocalDateTime postDate;
-    private Long likes;
+    private LocalDateTime uploadDate;
     @ManyToOne
     private User author;
-    @ManyToMany(mappedBy = "post")
-    private Comments comments;
+    private Long likes;
+    @ManyToMany(mappedBy = "video")
+    private List<Comments> comments;
+
+    public Video(){
+    }
+
 
     public Long getId() {
         return this.id;
@@ -39,28 +43,12 @@ public class Post {
         this.title = title;
     }
 
-    public String getMessage() {
-        return this.message;
+    public LocalDateTime getUploadDate() {
+        return this.uploadDate;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public LocalDateTime getPostDate() {
-        return this.postDate;
-    }
-
-    public void setPostDate(LocalDateTime postDate) {
-        this.postDate = postDate;
-    }
-
-    public Long getLikes() {
-        return this.likes;
-    }
-
-    public void setLikes(Long likes) {
-        this.likes = likes;
+    public void setUploadDate(LocalDateTime uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     public User getAuthor() {
@@ -71,11 +59,19 @@ public class Post {
         this.author = author;
     }
 
-    public Comments getComments() {
+    public Long getLikes() {
+        return this.likes;
+    }
+
+    public void setLikes(Long likes) {
+        this.likes = likes;
+    }
+
+    public List<Comments> getComments() {
         return this.comments;
     }
 
-    public void setComments(Comments comments) {
+    public void setComments(List<Comments> comments) {
         this.comments = comments;
     }
 

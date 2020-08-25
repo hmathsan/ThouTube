@@ -1,4 +1,4 @@
-package com.thoutume.model;
+package com.thoutube.model;
 
 public enum TipoComment {
     POST,
