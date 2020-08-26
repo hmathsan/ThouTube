@@ -5,22 +5,25 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
+@Table(name = "videos")
 public class Video {
     
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
-    private LocalDateTime uploadDate;
+    private LocalDateTime uploadDate = LocalDateTime.now();
     @ManyToOne
     private User author;
     private Long likes;
     @ManyToMany
-    private List<Comments> videoComments;
+    private List<VideoComments> videoComments;
 
     public Video(){
     }
@@ -66,11 +69,11 @@ public class Video {
         this.likes = likes;
     }
 
-    public List<Comments> getComments() {
+    public List<VideoComments> getComments() {
         return this.videoComments;
     }
 
-    public void setComments(List<Comments> comments) {
+    public void setComments(List<VideoComments> comments) {
         this.videoComments = comments;
     }
 

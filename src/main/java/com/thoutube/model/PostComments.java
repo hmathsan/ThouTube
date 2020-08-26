@@ -1,27 +1,23 @@
 package com.thoutube.model;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
-public class Comments {
+@Table(name = "post_comments")
+public class PostComments {
     
-	@Id @GeneratedValue
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     private User author;
-    @Enumerated(EnumType.STRING)
-    private TipoComment type;
     private String message;
     @ManyToOne
     private Post post;
-    @ManyToOne
-    private Video video;
-
 
     public Long getId() {
         return this.id;
@@ -39,14 +35,6 @@ public class Comments {
         this.author = author;
     }
 
-    public TipoComment getType() {
-        return this.type;
-    }
-
-    public void setType(TipoComment type) {
-        this.type = type;
-    }
-
     public String getMessage() {
         return this.message;
     }
@@ -61,14 +49,6 @@ public class Comments {
 
     public void setPost(Post post) {
         this.post = post;
-    }
-
-    public Video getVideo() {
-        return this.video;
-    }
-
-    public void setVideo(Video video) {
-        this.video = video;
     }
 
 }
