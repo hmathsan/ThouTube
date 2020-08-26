@@ -7,7 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -22,9 +26,9 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
-    @ManyToMany
+    @OneToMany(mappedBy = "author")
     private List<Post> posts;
-    @ManyToMany
+    @OneToMany(mappedBy = "author")
     private List<Video> videos;
 
     public User(){
