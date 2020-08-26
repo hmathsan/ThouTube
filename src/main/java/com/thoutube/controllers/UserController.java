@@ -8,9 +8,13 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import com.thoutube.controllers.dto.DetailedUserDto;
+import com.thoutube.controllers.dto.PostDto;
 import com.thoutube.controllers.dto.UserDto;
+import com.thoutube.controllers.dto.VideoDto;
 import com.thoutube.controllers.form.CommentForm;
+import com.thoutube.controllers.form.PostForm;
 import com.thoutube.controllers.form.UserForm;
+import com.thoutube.controllers.form.VideoForm;
 import com.thoutube.model.Post;
 import com.thoutube.model.PostComments;
 import com.thoutube.model.User;
@@ -22,6 +26,7 @@ import com.thoutube.repositories.UserRepository;
 import com.thoutube.repositories.VideoCommentsRepository;
 import com.thoutube.repositories.VideoRepository;
 
+import org.apache.catalina.connector.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -95,6 +100,38 @@ public class UserController {
                 URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.get().getId()).toUri();
                 return ResponseEntity.created(uri).build();
             }
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/video")
+    @Transactional
+    public ResponseEntity<VideoDto> uploadVideo(@PathVariable Long id, @RequestBody @Valid VideoForm form, UriComponentsBuilder uriBuilder) {
+        Optional<User> user = userRepository.findById(id);
+
+        if(user.isPresent()) {
+            Video video = new Video(form.getTitle(), user.get());
+            videoRepository.save(video);
+
+            URI uri = uriBuilder.build().toUri();
+            return ResponseEntity.created(uri).build();
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/{id}/post")
+    @Transactional
+    public ResponseEntity<PostDto> newPost(@PathVariable Long id, @RequestBody @Valid PostForm form, UriComponentsBuilder uriBuilder) {
+        Optional<User> user = userRepository.findById(id);
+
+        if(user.isPresent()) {
+            Post post = new Post(form.getTitle(), form.getMessage(), user.get());
+            postRepository.save(post);
+
+            URI uri = uriBuilder.build().toUri();
+            return ResponseEntity.created(uri).build();
         }
 
         return ResponseEntity.notFound().build();

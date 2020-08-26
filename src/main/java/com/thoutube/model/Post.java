@@ -28,6 +28,16 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST ,CascadeType.MERGE})
     private List<PostComments> postComments = new ArrayList<>();
 
+    public Post() {
+    }
+
+    public Post(String title, String message, User user) {
+        this.title = title;
+        this.message = message;
+        this.author = user;
+        this.likes = Long.valueOf(0);
+    }
+
     public Long getId() {
         return this.id;
     }

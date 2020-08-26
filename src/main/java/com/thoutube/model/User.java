@@ -2,6 +2,7 @@ package com.thoutube.model;
 
 import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,9 +15,12 @@ import javax.persistence.Table;
 public class User {
     
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    private Long id;
+    @Column(nullable = false)
     private String name;
+    @Column(nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
     @ManyToMany
     private List<Post> posts;
