@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -13,15 +12,15 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Video {
     
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id @GeneratedValue
     private Long id;
     private String title;
     private LocalDateTime uploadDate;
     @ManyToOne
     private User author;
     private Long likes;
-    @ManyToMany(mappedBy = "video")
-    private List<Comments> comments;
+    @ManyToMany
+    private List<Comments> videoComments;
 
     public Video(){
     }
@@ -68,11 +67,11 @@ public class Video {
     }
 
     public List<Comments> getComments() {
-        return this.comments;
+        return this.videoComments;
     }
 
     public void setComments(List<Comments> comments) {
-        this.comments = comments;
+        this.videoComments = comments;
     }
 
 }

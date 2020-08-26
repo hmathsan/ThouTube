@@ -1,10 +1,10 @@
 package com.thoutube.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Post {
     
-    @Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id @GeneratedValue
     private Long id;
     private String title;
     private String message;
@@ -20,8 +20,8 @@ public class Post {
     private Long likes;
     @ManyToOne
     private User author;
-    @ManyToMany(mappedBy = "post")
-    private Comments comments;
+    @ManyToMany
+    private List<Comments> postComments;
 
     public Long getId() {
         return this.id;
@@ -71,12 +71,12 @@ public class Post {
         this.author = author;
     }
 
-    public Comments getComments() {
-        return this.comments;
+    public List<Comments> getComments() {
+        return this.postComments;
     }
 
-    public void setComments(Comments comments) {
-        this.comments = comments;
+    public void setComments(List<Comments> comments) {
+        this.postComments = comments;
     }
 
 }
