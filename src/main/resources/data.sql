@@ -2,11 +2,9 @@ INSERT INTO USERS(id, email, name, password) VALUES(1, 'user@email.com', 'User 1
 
 INSERT INTO POSTS(id, likes, message, post_date, title, author_id) VALUES(1, 0, 'test message', '2020-08-25 18:00:00', 'title 1', 1);
 INSERT INTO POST_COMMENTS(id, message, author_id, post_id) VALUES(1, 'test comment', 1, 1);
-INSERT INTO posts_post_comments(post_id, post_comments_id) VALUES(1, 1);
 
 INSERT INTO users_posts(user_id, posts_id) VALUES(1, 1);
 
 INSERT INTO VIDEOS(id, likes, title, upload_date, author_id) VALUES(1, 0, 'video title', '2020-08-25 18:00:00', 1);
 INSERT INTO VIDEO_COMMENTS(id, message, author_id, video_id) VALUES(1, 'video comment test', 1, 1);
 INSERT INTO users_videos(user_id, videos_id) VALUES(1, 1);
-INSERT INTO videos_video_comments(video_id, video_comments_id) VALUES(1, 1);

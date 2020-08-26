@@ -1,14 +1,16 @@
 package com.thoutube.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -23,8 +25,8 @@ public class Post {
     private Long likes;
     @ManyToOne
     private User author;
-    @ManyToMany
-    private List<PostComments> postComments;
+    @OneToMany(mappedBy = "post", cascade = {CascadeType.PERSIST ,CascadeType.MERGE})
+    private List<PostComments> postComments = new ArrayList<>();
 
     public Long getId() {
         return this.id;

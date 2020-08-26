@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.thoutube.controllers.form.CommentForm;
+
 @Entity
 @Table(name = "post_comments")
 public class PostComments {
@@ -18,6 +20,12 @@ public class PostComments {
     private String message;
     @ManyToOne
     private Post post;
+
+    public PostComments(CommentForm form, User user, Post post) {
+        this.author = user;
+        this.message = form.getMessage();
+        this.post = post;
+    }
 
     public Long getId() {
         return this.id;
