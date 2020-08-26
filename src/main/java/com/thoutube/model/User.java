@@ -23,6 +23,15 @@ public class User {
     @ManyToMany
     private List<Video> videos;
 
+    public User(){
+    }
+
+    public User(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     @Override
 	public int hashCode() {
 		final int prime = 31;
