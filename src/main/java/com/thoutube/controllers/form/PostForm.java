@@ -9,6 +9,11 @@ public class PostForm {
     @NotNull
     private String message;
 
+    public PostForm(String message, String title) {
+        this.message = "";
+        this.title = "";
+    }
+
     public String getTitle() {
         return this.title;
     }
