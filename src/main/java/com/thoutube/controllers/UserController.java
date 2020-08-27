@@ -99,6 +99,7 @@ public class UserController {
             Video video = new Video(form.getTitle(), user.get());
             videoRepository.save(video);
 
+            //URI not completed, need to finish VideoController
             URI uri = uriBuilder.build().toUri();
             return ResponseEntity.created(uri).build();
         }
@@ -115,10 +116,23 @@ public class UserController {
             Post post = new Post(form.getTitle(), form.getMessage(), user.get());
             postRepository.save(post);
 
+            //URI not completed, need to finish PostController
             URI uri = uriBuilder.build().toUri();
             return ResponseEntity.created(uri).build();
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @GetMapping("/{id}/post")
+    public List<DetailedPostDto> postByUserId(@PathVariable Long id) {
+        List<Post> posts = postRepository.findByAuthorId(id);
+        return DetailedPostDto.convert(posts);
+    }
+
+    @GetMapping("/{id}/video")
+    public List<DetailedVideoDto> videoByUserId(@PathVariable Long id) {
+        List<Video> videos = videoRepository.findByAuthorId(id);
+        return DetailedVideoDto.convert(videos);
     }
 }

@@ -1,6 +1,8 @@
 package com.thoutube.controllers.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.thoutube.model.Post;
 
@@ -38,5 +40,9 @@ public class PostDto {
     public Long getLikes() {
         return this.likes;
     }
+
+	public static List<PostDto> convert(List<Post> posts) {
+		return posts.stream().map(PostDto::new).collect(Collectors.toList());
+	}
     
 }
