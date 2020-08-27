@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 import com.thoutube.controllers.dto.*;
 import com.thoutube.controllers.form.*;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -134,5 +136,20 @@ public class UserController {
     public List<DetailedVideoDto> videoByUserId(@PathVariable Long id) {
         List<Video> videos = videoRepository.findByAuthorId(id);
         return DetailedVideoDto.convert(videos);
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public ResponseEntity<UserDto> updatePassword(@PathVariable Long id, @RequestBody @NotBlank String password) {
+        Optional<User> user = userRepository.findById(id);
+
+        if(user.isPresent()) {
+            User updatedUser = new User(user.get(), password);
+            userRepository.save(updatedUser);
+
+            return ResponseEntity.ok(new UserDto(user.get()));
+        }
+
+        return ResponseEntity.notFound().build();
     }
 }

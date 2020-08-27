@@ -4,6 +4,9 @@ import java.util.List;
 
 import javax.persistence.*;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -28,6 +31,18 @@ public class User {
         this.name = name;
         this.email = email;
         this.password = password;
+    }
+
+    public User(User user, String password) {
+        this.id = user.getId();
+        this.name = user.getName();
+        this.email = user.getEmail();
+        this.posts = user.getPosts();
+        this.videos = user.getVideos();
+
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        String passwd = encoder.encode(password);
+        this.password = passwd;
     }
 
     @Override
