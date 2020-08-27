@@ -1,6 +1,5 @@
 package com.thoutube.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -29,6 +28,10 @@ import com.thoutube.repositories.VideoRepository;
 import com.thoutube.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -45,8 +48,10 @@ public class UserServices {
     @Autowired
     private VideoCommentsRepository videoCommentsRepository;
 
-    public List<DetailedUserDto> detailedIndex() {
-        List<User> user = userRepository.findAll();
+    public Page<DetailedUserDto> detailedIndex(int page, int size, String orderBy) {
+        Pageable pagination = PageRequest.of(page, size, Direction.ASC, orderBy);
+
+        Page<User> user = userRepository.findAll(pagination);
         return DetailedUserDto.convert(user);
     }
 
@@ -64,14 +69,16 @@ public class UserServices {
         return user.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(id)));
     }
 
-    public List<DetailedPostDto> getPostByUserId(Long id) {
-        List<Post> posts = postRepository.findByAuthorId(id);
+    public Page<DetailedPostDto> getPostByUserId(Long id, int page, int size, String orderBy) {
+        Pageable pagination = PageRequest.of(page, size, Direction.ASC, orderBy);
+        Page<Post> posts = postRepository.findByAuthorId(id, pagination);
         
         return DetailedPostDto.convert(posts);
     }
 
-    public List<DetailedVideoDto> getVideoByUserId(Long id) {
-        List<Video> videos = videoRepository.findByAuthorId(id);
+    public Page<DetailedVideoDto> getVideoByUserId(Long id, int page, int size, String orderBy) {
+        Pageable pagination = PageRequest.of(page, size, Direction.ASC, orderBy);
+        Page<Video> videos = videoRepository.findByAuthorId(id, pagination);
 
         return DetailedVideoDto.convert(videos);
     }

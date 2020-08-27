@@ -1,6 +1,5 @@
 package com.thoutube.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -11,6 +10,10 @@ import com.thoutube.repositories.VideoRepository;
 import com.thoutube.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,8 +22,9 @@ public class VideoServices {
     @Autowired
     private VideoRepository videoRepository;
 
-    public List<DetailedVideoDto> detailedIndex() {
-        List<Video> videos = videoRepository.findAll();
+    public Page<DetailedVideoDto> detailedIndex(int page, int size, String properties) {
+        Pageable pagination = PageRequest.of(page, size, Direction.ASC, properties);
+        Page<Video> videos = videoRepository.findAll(pagination);
         return DetailedVideoDto.convert(videos);
     }
 

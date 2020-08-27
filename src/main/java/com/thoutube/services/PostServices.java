@@ -1,6 +1,5 @@
 package com.thoutube.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -12,6 +11,10 @@ import com.thoutube.repositories.PostRepository;
 import com.thoutube.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,8 +23,9 @@ public class PostServices {
     @Autowired
     private PostRepository postRepository;
 
-    public List<DetailedPostDto> detailedIndex() {
-        List<Post> posts = postRepository.findAll();
+    public Page<DetailedPostDto> detailedIndex(int page, int size, String orderBy) {
+        Pageable pagination = PageRequest.of(page, size, Direction.ASC, orderBy);
+        Page<Post> posts = postRepository.findAll(pagination);
         return DetailedPostDto.convert(posts);
     }
 

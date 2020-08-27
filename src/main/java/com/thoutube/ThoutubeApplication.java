@@ -1,18 +1,12 @@
 package com.thoutube;
 
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ThoutubeApplication implements CommandLineRunner {
+public class ThoutubeApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ThoutubeApplication.class, args);
 	}
-
-	@Override
-	public void run(String... args) throws Exception {
-	}
-
 }

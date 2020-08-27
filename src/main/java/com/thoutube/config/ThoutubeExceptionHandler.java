@@ -4,6 +4,7 @@ import com.thoutube.services.exceptions.ObjectNotFoundException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,12 @@ public class ThoutubeExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public String NotValidHandler(MethodArgumentNotValidException e) {
         return "Error 404: \nMessage: Field " + e.getBindingResult().getFieldError().getField().toString() + " must not be empty";
+    }
+
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public String MissingRequestParamHandler(MissingServletRequestParameterException e) {
+        return "Error 404: \nMessage: Parameter " + e.getParameterName().toString() + " must not be empty";
     }
 
 }

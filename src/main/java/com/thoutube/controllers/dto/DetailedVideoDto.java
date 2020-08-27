@@ -1,10 +1,10 @@
 package com.thoutube.controllers.dto;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import com.thoutube.model.Video;
+
+import org.springframework.data.domain.Page;
 
 public class DetailedVideoDto {
     private Long id;
@@ -71,7 +71,7 @@ public class DetailedVideoDto {
         this.likes = likes;
     }
     
-    public static List<DetailedVideoDto> convert(List<Video> videos) {
-		return videos.stream().map(DetailedVideoDto::new).collect(Collectors.toList());
+    public static Page<DetailedVideoDto> convert(Page<Video> videos) {
+		return videos.map(DetailedVideoDto::new);
 	}
 }

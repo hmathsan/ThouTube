@@ -1,7 +1,6 @@
 package com.thoutube.controllers;
 
 import java.net.URI;
-import java.util.List;
 
 import javax.validation.Valid;
 
@@ -21,6 +20,7 @@ import com.thoutube.services.ThoutubeServices;
 import com.thoutube.services.UserServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,8 +43,9 @@ public class UserController {
     private UserServices userService;
 
     @GetMapping
-    public ResponseEntity<List<DetailedUserDto>> detailedIndex() {
-        List<DetailedUserDto> user = userService.detailedIndex();
+    public ResponseEntity<Page<DetailedUserDto>> detailedIndex(@RequestParam int page,
+                @RequestParam int pageSize, @RequestParam String orderBy) {
+        Page<DetailedUserDto> user = userService.detailedIndex(page, pageSize, orderBy);
         return ResponseEntity.ok().body(user);
     }
 
@@ -88,14 +89,16 @@ public class UserController {
     }
 
     @GetMapping("/{id}/post")
-    public ResponseEntity<List<DetailedPostDto>> postByUserId(@PathVariable Long id) {
-        List<DetailedPostDto> posts = userService.getPostByUserId(id);
+    public ResponseEntity<Page<DetailedPostDto>> postByUserId(@PathVariable Long id,
+        @RequestParam int page, @RequestParam int pageSize, @RequestParam String orderBy) {
+        Page<DetailedPostDto> posts = userService.getPostByUserId(id, page, pageSize, orderBy);
         return ResponseEntity.ok().body(posts);
     }
 
     @GetMapping("/{id}/video")
-    public ResponseEntity<List<DetailedVideoDto>> videoByUserId(@PathVariable Long id) {
-        List<DetailedVideoDto> videos = userService.getVideoByUserId(id);
+    public ResponseEntity<Page<DetailedVideoDto>> videoByUserId(@PathVariable Long id,
+        @RequestParam int page, @RequestParam int pageSize, @RequestParam String orderBy) {
+        Page<DetailedVideoDto> videos = userService.getVideoByUserId(id, page, pageSize, orderBy);
         return ResponseEntity.ok().body(videos);
     }
 

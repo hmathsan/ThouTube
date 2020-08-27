@@ -1,17 +1,17 @@
 package com.thoutube.controllers;
 
-import java.util.List;
-
 import com.thoutube.controllers.dto.DetailedVideoDto;
 import com.thoutube.model.Video;
 import com.thoutube.services.VideoServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,8 +22,9 @@ public class VideoController {
     private VideoServices videoServices;
 
     @GetMapping
-    public ResponseEntity<List<DetailedVideoDto>> detailedIndex() {
-        List<DetailedVideoDto> videos = videoServices.detailedIndex();
+    public ResponseEntity<Page<DetailedVideoDto>> detailedIndex(@RequestParam int page, 
+        @RequestParam int pageSize, @RequestParam String orderBy) {
+        Page<DetailedVideoDto> videos = videoServices.detailedIndex(page, pageSize, orderBy);
         return ResponseEntity.ok().body(videos);
     }
 
