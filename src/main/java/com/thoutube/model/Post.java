@@ -31,6 +31,26 @@ public class Post {
         this.likes = Long.valueOf(0);
     }
 
+    public Post(Post post, String title, String message) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.message = post.getMessage();
+        this.postDate = post.getPostDate();
+        this.likes = post.getLikes() + 1;
+        this.author = post.getAuthor();
+        this.postComments = post.getComments();
+
+        if(!title.equals("")){
+            this.title = title;
+            this.likes = post.getLikes();
+        }
+
+        if(!message.equals("")) {
+            this.message = message;
+            this.likes = post.getLikes();
+        }
+    }
+
     public Long getId() {
         return this.id;
     }

@@ -1,12 +1,12 @@
 package com.thoutube.controllers.form;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 public class PostForm {
 
-    @NotBlank
+    @NotNull
     private String title;
-    @NotBlank
+    @NotNull
     private String message;
 
     public String getTitle() {
