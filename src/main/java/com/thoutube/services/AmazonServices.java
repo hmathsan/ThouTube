@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-public class ThoutubeServices {
+public class AmazonServices {
 
     @Autowired
     private S3Service s3Service;

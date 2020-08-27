@@ -19,6 +19,8 @@ public class User {
     private String email;
     @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
+    private String imageUrl;
     @OneToMany(mappedBy = "author")
     private List<Post> posts;
     @OneToMany(mappedBy = "author")
@@ -33,16 +35,24 @@ public class User {
         this.password = password;
     }
 
-    public User(User user, String password) {
+    public User(User user, String password, String imageUrl) {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.posts = user.getPosts();
         this.videos = user.getVideos();
+        this.imageUrl = user.getImageUrl();
+        this.password = user.getPassword();
 
-        PasswordEncoder encoder = new BCryptPasswordEncoder();
-        String passwd = encoder.encode(password);
-        this.password = passwd;
+        if(!imageUrl.equals("")) {
+            this.imageUrl = imageUrl;
+        }
+
+        if(!password.equals("")) {
+            PasswordEncoder encoder = new BCryptPasswordEncoder();
+            String passwd = encoder.encode(password);
+            this.password = passwd;
+        }
     }
 
     @Override
@@ -116,6 +126,14 @@ public class User {
 
     public void setVideos(List<Video> videos) {
         this.videos = videos;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
     
 }

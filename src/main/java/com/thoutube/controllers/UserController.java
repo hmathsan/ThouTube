@@ -8,15 +8,12 @@ import com.thoutube.controllers.dto.DetailedPostDto;
 import com.thoutube.controllers.dto.DetailedUserDto;
 import com.thoutube.controllers.dto.DetailedVideoDto;
 import com.thoutube.controllers.dto.PostDto;
-import com.thoutube.controllers.dto.UserDto;
 import com.thoutube.controllers.dto.VideoDto;
 import com.thoutube.controllers.form.CommentForm;
 import com.thoutube.controllers.form.PasswordForm;
 import com.thoutube.controllers.form.PostForm;
-import com.thoutube.controllers.form.UserForm;
 import com.thoutube.controllers.form.VideoForm;
 import com.thoutube.model.User;
-import com.thoutube.services.ThoutubeServices;
 import com.thoutube.services.UserServices;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +35,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class UserController {
 
     @Autowired
-    private ThoutubeServices amazonServices;
-    @Autowired
     private UserServices userService;
 
     @GetMapping
@@ -50,8 +45,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserDto> create(@RequestBody @Valid UserForm form, UriComponentsBuilder uriBuilder) {
-        UserDto user = userService.create(form);
+    public ResponseEntity<DetailedUserDto> create(@RequestParam(required = true, name = "name") String name, 
+        @RequestParam(required = true, name = "email") String email,
+        @RequestParam(required = true, name = "password") String password,
+        @RequestParam(name = "file", required = false) MultipartFile file, UriComponentsBuilder uriBuilder) {
+        System.out.println(file);
+        DetailedUserDto user = userService.create(name, email, password, file);
 
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(user);
@@ -64,9 +63,9 @@ public class UserController {
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<UserDto> newComment(@PathVariable Long id, @RequestParam String type,
+    public ResponseEntity<DetailedUserDto> newComment(@PathVariable Long id, @RequestParam String type,
             @RequestBody @Valid CommentForm form, UriComponentsBuilder uriBuilder) {
-        UserDto user = userService.newComment(id, type, form);
+        DetailedUserDto user = userService.newComment(id, type, form);
 
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(user);
@@ -103,14 +102,14 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserDto> updatePassword(@PathVariable Long id, @RequestBody(required = true) @Valid PasswordForm password) {
-        UserDto user = userService.updateUserPassword(id, password);
+    public ResponseEntity<DetailedUserDto> updatePassword(@PathVariable Long id, @RequestBody(required = true) @Valid PasswordForm password) {
+        DetailedUserDto user = userService.updateUserPassword(id, password);
         return ResponseEntity.ok().body(user);
     }
 
-    @PostMapping("/pictures")
-    public ResponseEntity<Void> updateProfilePic(@RequestParam(name = "file") MultipartFile file) {
-        URI uri = amazonServices.uploadProfilePic(file);
+    @PostMapping("/{id}/pictures")
+    public ResponseEntity<Void> updateProfilePic(@PathVariable Long id, @RequestParam(name = "file") MultipartFile file) {
+        URI uri = userService.uploadProfilePic(id, file);
         return ResponseEntity.created(uri).build();
     }
 }

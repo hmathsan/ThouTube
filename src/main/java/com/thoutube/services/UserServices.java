@@ -1,5 +1,6 @@
 package com.thoutube.services;
 
+import java.net.URI;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -8,7 +9,6 @@ import com.thoutube.controllers.dto.DetailedPostDto;
 import com.thoutube.controllers.dto.DetailedUserDto;
 import com.thoutube.controllers.dto.DetailedVideoDto;
 import com.thoutube.controllers.dto.PostDto;
-import com.thoutube.controllers.dto.UserDto;
 import com.thoutube.controllers.dto.VideoDto;
 import com.thoutube.controllers.form.CommentForm;
 import com.thoutube.controllers.form.PasswordForm;
@@ -33,10 +33,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UserServices {
 
+    @Autowired
+    private AmazonServices amazonServices;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -56,11 +59,17 @@ public class UserServices {
     }
 
     @Transactional
-    public UserDto create(UserForm form) {
-        User user = new User(form.getName(), form.getEmail(), form.getPassword());
+    public DetailedUserDto create(String name, String email, String password, MultipartFile file) {
+        User user = new User(name, email, password);
+        if(file == null) {
+            user.setImageUrl("https://thoutube.s3-sa-east-1.amazonaws.com/default-profile-icon.png");
+        } else {
+            URI uri = amazonServices.uploadProfilePic(file);
+            user.setImageUrl(uri.toString());
+        }
         userRepository.save(user);
 
-        return new UserDto(user);
+        return new DetailedUserDto(user);
     }
 
     public User index(Long id) {
@@ -84,7 +93,7 @@ public class UserServices {
     }
 
     @Transactional
-    public UserDto newComment(Long id, String type, CommentForm form) {
+    public DetailedUserDto newComment(Long id, String type, CommentForm form) {
         Optional<User> userObj = userRepository.findById(id);
         Optional<Post> postObj = postRepository.findById(form.getPostId());
         Optional<Video> videoObj = videoRepository.findById(form.getPostId());
@@ -104,7 +113,7 @@ public class UserServices {
             videoCommentsRepository.save(comment);
         }
 
-        return new UserDto(user);
+        return new DetailedUserDto(user);
     }
 
     @Transactional
@@ -130,14 +139,25 @@ public class UserServices {
     }
 
     @Transactional
-    public UserDto updateUserPassword(Long id, PasswordForm password) {
+    public DetailedUserDto updateUserPassword(Long id, PasswordForm password) {
         Optional<User> userObj = userRepository.findById(id);
         User user = userObj.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(id)));
 
-        User updatedUser = new User(user, password.getPassword());
+        User updatedUser = new User(user, password.getPassword(), "");
         userRepository.save(updatedUser);
 
-        return new UserDto(updatedUser);
+        return new DetailedUserDto(updatedUser);
+    }
+
+    public URI uploadProfilePic(Long id, MultipartFile file) {
+        URI uri = amazonServices.uploadProfilePic(file);
+        Optional<User> userObj = userRepository.findById(id);
+        User user = userObj.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(id)));
+        
+        user.setImageUrl(uri.toString());
+        userRepository.save(user);
+
+        return uri;
     }
 
     public String exceptionMsg(Long id) {

@@ -8,6 +8,7 @@ public class DetailedUserDto {
     private Long id;
     private String name;
     private String email;
+    private String imageUrl;
     private Long totalPosts;
     private Long totalVideos;
 
@@ -15,8 +16,14 @@ public class DetailedUserDto {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
-        this.totalPosts = user.getPosts().stream().count();
-        this.totalVideos = user.getVideos().stream().count();
+        this.imageUrl = user.getImageUrl();
+        if(user.getPosts() == null && user.getVideos() == null) {
+            this.totalPosts = Long.valueOf(0);
+            this.totalVideos = Long.valueOf(0);
+        } else {
+            this.totalPosts = user.getPosts().stream().count();
+            this.totalVideos = user.getVideos().stream().count();
+        }
     }
 
     public Long getId() {
@@ -37,6 +44,10 @@ public class DetailedUserDto {
 
     public Long getTotalVideos() {
         return this.totalVideos;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl;
     }
 
     public static Page<DetailedUserDto> convert(Page<User> user) {
