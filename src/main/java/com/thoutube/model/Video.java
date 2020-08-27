@@ -32,6 +32,19 @@ public class Video {
         this.likes = Long.valueOf(0);
     }
 
+    public Video(Video video, String title) {
+        this.id = video.getId();
+        this.title = video.getTitle();
+        this.uploadDate = video.getUploadDate();
+        this.author = video.getAuthor();
+        this.likes = video.getLikes() + 1;
+        this.videoComments = video.getComments();
+        if(!title.equals("")) {
+            this.title = title;
+            this.likes = video.getLikes();
+        }
+    }
+
     public Long getId() {
         return this.id;
     }
