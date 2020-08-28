@@ -2,6 +2,7 @@ package com.thoutube.services;
 
 import java.net.URI;
 import java.util.Optional;
+import java.awt.image.BufferedImage;
 
 import javax.transaction.Transactional;
 
@@ -27,6 +28,7 @@ import com.thoutube.repositories.VideoCommentsRepository;
 import com.thoutube.repositories.VideoRepository;
 import com.thoutube.services.exceptions.ObjectNotFoundException;
 
+import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +41,11 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserServices {
 
     @Autowired
+    private ImageServices imageServices;
+    @Autowired
     private AmazonServices amazonServices;
+    @Autowired
+    private S3Service s3Service;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -59,14 +65,10 @@ public class UserServices {
     }
 
     @Transactional
-    public DetailedUserDto create(String name, String email, String password, MultipartFile file) {
-        User user = new User(name, email, password);
-        if(file == null) {
-            user.setImageUrl("https://thoutube.s3-sa-east-1.amazonaws.com/default-profile-icon.png");
-        } else {
-            URI uri = amazonServices.uploadProfilePic(file);
-            user.setImageUrl(uri.toString());
-        }
+    public DetailedUserDto create(UserForm form) {
+        User user = new User(form.getName(), form.getEmail(), form.getPassword());
+
+        user.setImageUrl("https://thoutube.s3-sa-east-1.amazonaws.com/default-profile-icon.png");
         userRepository.save(user);
 
         return new DetailedUserDto(user);
@@ -81,7 +83,7 @@ public class UserServices {
     public Page<DetailedPostDto> getPostByUserId(Long id, int page, int size, String orderBy) {
         Pageable pagination = PageRequest.of(page, size, Direction.ASC, orderBy);
         Page<Post> posts = postRepository.findByAuthorId(id, pagination);
-        
+
         return DetailedPostDto.convert(posts);
     }
 
@@ -99,10 +101,10 @@ public class UserServices {
         Optional<Video> videoObj = videoRepository.findById(form.getPostId());
 
         User user = userObj.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(id)));
-        
+
         if (type.equals("POST")) {
             Post post = postObj.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(form.getPostId())));
-            
+
             PostComments comment = new PostComments(form, user, post);
             postCommentsRepository.save(comment);
 
@@ -117,14 +119,27 @@ public class UserServices {
     }
 
     @Transactional
-    public VideoDto uploadVideo(Long id, VideoForm form) {
+    public DetailedVideoDto uploadVideo(Long id, String title, MultipartFile videoFile, MultipartFile thumbFile) {
         Optional<User> userObj = userRepository.findById(id);
         User user = userObj.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(id)));
 
-        Video video = new Video(form.getTitle(), user);
+        
+        Video video = new Video(title, "", "", user);
+        videoRepository.save(video);
+        
+        String videoName = "video" + video.getId() + "." + FilenameUtils.getExtension(videoFile.getOriginalFilename());
+        String thumbName = "videoThumbnail" + video.getId() + ".jpg";
+
+        BufferedImage thumbJpg = imageServices.getJpgImageFromFile(thumbFile);
+        URI videoUri = s3Service.uploadFile(videoFile, videoName);
+        URI thumbUri = s3Service.uploadFile(imageServices.getInputStream(thumbJpg, "jpg"), thumbName, "image");
+
+        video.setVideoUrl(videoUri.toString());
+        video.setThumbUrl(thumbUri.toString());
+
         videoRepository.save(video);
 
-        return new VideoDto(video);
+        return new DetailedVideoDto(video);
     }
 
     @Transactional
@@ -149,15 +164,15 @@ public class UserServices {
         return new DetailedUserDto(updatedUser);
     }
 
+    @Transactional
     public URI uploadProfilePic(Long id, MultipartFile file) {
-        URI uri = amazonServices.uploadProfilePic(file);
         Optional<User> userObj = userRepository.findById(id);
         User user = userObj.orElseThrow(() -> new ObjectNotFoundException(exceptionMsg(id)));
-        
-        user.setImageUrl(uri.toString());
-        userRepository.save(user);
 
-        return uri;
+        BufferedImage jpgImage = imageServices.getJpgImageFromFile(file);
+        String fileName = "user" + user.getId() + ".jpg";
+
+        return s3Service.uploadFile(imageServices.getInputStream(jpgImage, "jpg"), fileName, "image");
     }
 
     public String exceptionMsg(Long id) {

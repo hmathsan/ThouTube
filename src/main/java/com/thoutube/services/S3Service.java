@@ -27,9 +27,8 @@ public class S3Service {
     @Value("${s3.bucket}")
     private String bucketName;
 
-    public URI uploadFile(MultipartFile multipartFile) {
+    public URI uploadFile(MultipartFile multipartFile, String fileName) {
         try {
-            String fileName = multipartFile.getOriginalFilename();
             InputStream is = multipartFile.getInputStream();
             String contentType = multipartFile.getContentType();
     

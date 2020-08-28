@@ -12,6 +12,7 @@ import com.thoutube.controllers.dto.VideoDto;
 import com.thoutube.controllers.form.CommentForm;
 import com.thoutube.controllers.form.PasswordForm;
 import com.thoutube.controllers.form.PostForm;
+import com.thoutube.controllers.form.UserForm;
 import com.thoutube.controllers.form.VideoForm;
 import com.thoutube.model.User;
 import com.thoutube.services.UserServices;
@@ -45,12 +46,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<DetailedUserDto> create(@RequestParam(required = true, name = "name") String name, 
-        @RequestParam(required = true, name = "email") String email,
-        @RequestParam(required = true, name = "password") String password,
-        @RequestParam(name = "file", required = false) MultipartFile file, UriComponentsBuilder uriBuilder) {
-        System.out.println(file);
-        DetailedUserDto user = userService.create(name, email, password, file);
+    public ResponseEntity<DetailedUserDto> create(@RequestBody @Valid UserForm form, UriComponentsBuilder uriBuilder) {
+        DetailedUserDto user = userService.create(form);
 
         URI uri = uriBuilder.path("/users/{id}").buildAndExpand(user.getId()).toUri();
         return ResponseEntity.created(uri).body(user);
@@ -72,8 +69,10 @@ public class UserController {
     }
 
     @PostMapping("/{id}/video")
-    public ResponseEntity<VideoDto> uploadVideo(@PathVariable Long id, @RequestBody @Valid VideoForm form, UriComponentsBuilder uriBuilder) {
-        VideoDto video = userService.uploadVideo(id, form);
+    public ResponseEntity<DetailedVideoDto> uploadVideo(@PathVariable Long id, 
+            @RequestParam(name = "title") String title, @RequestParam(name = "video", required = false) MultipartFile videoFile, 
+            @RequestParam(name = "thumb", required = false) MultipartFile thumbFile, UriComponentsBuilder uriBuilder) {
+        DetailedVideoDto video = userService.uploadVideo(id, title, videoFile, thumbFile);
 
         URI uri = uriBuilder.path("/videos/{id}").buildAndExpand(video.getId()).toUri();
         return ResponseEntity.created(uri).body(video);

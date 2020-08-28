@@ -12,7 +12,7 @@ public class AmazonServices {
     @Autowired
     private S3Service s3Service;
     
-    public URI uploadProfilePic(MultipartFile multipartFile) {
-        return s3Service.uploadFile(multipartFile);
+    public URI uploadFile(MultipartFile multipartFile) {
+        return s3Service.uploadFile(multipartFile, multipartFile.getOriginalFilename());
     }
 }

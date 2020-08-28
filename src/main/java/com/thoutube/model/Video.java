@@ -15,6 +15,10 @@ public class Video {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false)
+    private String videoUrl;
+    @Column(nullable = false)
+    private String thumbUrl;
+    @Column(nullable = false)
     private LocalDateTime uploadDate = LocalDateTime.now();
     @ManyToOne
     private User author;
@@ -26,8 +30,10 @@ public class Video {
     public Video(){
     }
 
-    public Video(String title, User user) {
+    public Video(String title, String videoUrl, String thumbUrl, User user) {
         this.title = title;
+        this.videoUrl = videoUrl;
+        this.thumbUrl = thumbUrl;
         this.author = user;
         this.likes = Long.valueOf(0);
     }
@@ -38,7 +44,7 @@ public class Video {
         this.uploadDate = video.getUploadDate();
         this.author = video.getAuthor();
         this.likes = video.getLikes() + 1;
-        this.videoComments = video.getComments();
+        this.videoComments = video.getVideoComments();
         if(!title.equals("")) {
             this.title = title;
             this.likes = video.getLikes();
@@ -59,6 +65,22 @@ public class Video {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getVideoUrl() {
+        return this.videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public String getThumbUrl() {
+        return this.thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 
     public LocalDateTime getUploadDate() {
@@ -85,12 +107,12 @@ public class Video {
         this.likes = likes;
     }
 
-    public List<VideoComments> getComments() {
+    public List<VideoComments> getVideoComments() {
         return this.videoComments;
     }
 
-    public void setComments(List<VideoComments> comments) {
-        this.videoComments = comments;
+    public void setVideoComments(List<VideoComments> videoComments) {
+        this.videoComments = videoComments;
     }
 
 }

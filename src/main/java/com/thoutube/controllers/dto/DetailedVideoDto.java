@@ -11,6 +11,8 @@ public class DetailedVideoDto {
     private Long authorId;
     private String authorName;
     private String title;
+    private String videoUrl;
+    private String thumbUrl;
     private LocalDateTime uploadDate;
     private Long likes;
 
@@ -19,6 +21,8 @@ public class DetailedVideoDto {
         this.authorId = video.getAuthor().getId();
         this.authorName = video.getAuthor().getName();
         this.title = video.getTitle();
+        this.videoUrl = video.getVideoUrl();
+        this.thumbUrl = video.getThumbUrl();
         this.uploadDate = video.getUploadDate();
         this.likes = video.getLikes();
     }
@@ -53,6 +57,22 @@ public class DetailedVideoDto {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getVideoUrl() {
+        return this.videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    public String getThumbUrl() {
+        return this.thumbUrl;
+    }
+
+    public void setThumbUrl(String thumbUrl) {
+        this.thumbUrl = thumbUrl;
     }
 
     public LocalDateTime getUploadDate() {
