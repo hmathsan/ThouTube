@@ -8,12 +8,10 @@ import com.thoutube.controllers.dto.DetailedPostDto;
 import com.thoutube.controllers.dto.DetailedUserDto;
 import com.thoutube.controllers.dto.DetailedVideoDto;
 import com.thoutube.controllers.dto.PostDto;
-import com.thoutube.controllers.dto.VideoDto;
 import com.thoutube.controllers.form.CommentForm;
 import com.thoutube.controllers.form.PasswordForm;
 import com.thoutube.controllers.form.PostForm;
 import com.thoutube.controllers.form.UserForm;
-import com.thoutube.controllers.form.VideoForm;
 import com.thoutube.model.User;
 import com.thoutube.services.UserServices;
 

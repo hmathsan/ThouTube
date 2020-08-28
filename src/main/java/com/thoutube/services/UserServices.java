@@ -1,8 +1,8 @@
 package com.thoutube.services;
 
+import java.awt.image.BufferedImage;
 import java.net.URI;
 import java.util.Optional;
-import java.awt.image.BufferedImage;
 
 import javax.transaction.Transactional;
 
@@ -10,12 +10,10 @@ import com.thoutube.controllers.dto.DetailedPostDto;
 import com.thoutube.controllers.dto.DetailedUserDto;
 import com.thoutube.controllers.dto.DetailedVideoDto;
 import com.thoutube.controllers.dto.PostDto;
-import com.thoutube.controllers.dto.VideoDto;
 import com.thoutube.controllers.form.CommentForm;
 import com.thoutube.controllers.form.PasswordForm;
 import com.thoutube.controllers.form.PostForm;
 import com.thoutube.controllers.form.UserForm;
-import com.thoutube.controllers.form.VideoForm;
 import com.thoutube.model.Post;
 import com.thoutube.model.PostComments;
 import com.thoutube.model.User;
@@ -42,8 +40,6 @@ public class UserServices {
 
     @Autowired
     private ImageServices imageServices;
-    @Autowired
-    private AmazonServices amazonServices;
     @Autowired
     private S3Service s3Service;
     @Autowired
