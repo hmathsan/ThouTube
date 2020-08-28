@@ -1,17 +1,24 @@
 package com.thoutube.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.*;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Table(name = "users")
-public class User {
-    
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class User implements UserDetails {
+
+    private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String name;
@@ -26,7 +33,10 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Video> videos;
 
-    public User(){
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<Profile> profiles = new ArrayList<>();
+
+    public User() {
     }
 
     public User(String name, String email, String password) {
@@ -44,11 +54,11 @@ public class User {
         this.imageUrl = user.getImageUrl();
         this.password = user.getPassword();
 
-        if(!imageUrl.equals("")) {
+        if (!imageUrl.equals("")) {
             this.imageUrl = imageUrl;
         }
 
-        if(!password.equals("")) {
+        if (!password.equals("")) {
             PasswordEncoder encoder = new BCryptPasswordEncoder();
             String passwd = encoder.encode(password);
             this.password = passwd;
@@ -56,29 +66,29 @@ public class User {
     }
 
     @Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		return result;
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
-    
+
     @Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		return true;
-	}
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        User other = (User) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        } else if (!id.equals(other.id))
+            return false;
+        return true;
+    }
 
     public Long getId() {
         return this.id;
@@ -134,6 +144,36 @@ public class User {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.profiles;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
     
 }
