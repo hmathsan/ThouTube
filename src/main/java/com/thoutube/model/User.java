@@ -146,6 +146,14 @@ public class User implements UserDetails {
         this.imageUrl = imageUrl;
     }
 
+    public List<Profile> getProfiles() {
+        return this.profiles;
+    }
+
+    public void setProfiles(List<Profile> profiles) {
+        this.profiles = profiles;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.profiles;

@@ -28,7 +28,7 @@ public class TokenDto {
         return this.willExpireAt;
     }
 
-    public LocalDateTime setWillExpireAt(LocalDateTime willExpireAt) {
+    public void setWillExpireAt(LocalDateTime willExpireAt) {
         this.willExpireAt = willExpireAt;
     }
 

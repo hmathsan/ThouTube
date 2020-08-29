@@ -1,5 +1,6 @@
 package com.thoutube.config.security;
 
+import com.thoutube.repositories.UserRepository;
 import com.thoutube.services.AuthenticationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @Configuration
@@ -21,6 +23,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     
     @Autowired
     private AuthenticationService authService;
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     @Bean
@@ -43,7 +47,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                                 .antMatchers(HttpMethod.GET, "/posts/*").permitAll()
                                 .antMatchers(HttpMethod.POST, "/auth").permitAll()
                                 .anyRequest().authenticated().and().csrf().disable()
-                                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                                .and().addFilterBefore(new AuthenticationFilter(authService, userRepository), UsernamePasswordAuthenticationFilter.class);
     }
 
     // Static resources configurations
