@@ -1,6 +1,5 @@
 package com.thoutube.model;
 
-import javax.annotation.Generated;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +10,10 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 public class Profile implements GrantedAuthority {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private static final long serialVersionUID = 1L;
+    
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 
